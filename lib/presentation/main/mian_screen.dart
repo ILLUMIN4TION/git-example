@@ -1,7 +1,10 @@
+import 'package:daelim_2025/app/router/app_route.dart';
 import 'package:daelim_2025/presentation/common/widgets/white_box/white_box.dart';
+import 'package:daelim_2025/presentation/main/widgets/gender_box.dart';
 import 'package:daelim_2025/presentation/main/widgets/height_box.dart';
 import 'package:daelim_2025/presentation/main/widgets/in_de_container.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,6 +16,31 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _age = 0;
   int _weight = 0;
+  double _height = 100.0;
+  Gender _gender = Gender.male; // 기본값 저장
+
+  void _onCalculatored() {
+    debugPrint('나이:$_age');
+    debugPrint('무게:$_weight');
+    debugPrint('키키:$_height');
+    debugPrint('성별:$_gender');
+
+    //round로 int형병환 -> 100-> 1m
+    final chHeight = _height.round() / 100;
+    //bmi 계산식 몸무게/키*키
+    final bmi = _weight / (chHeight * chHeight);
+    debugPrint('BMI: $bmi');
+
+    context.pushNamed(
+      AppRoute.result.name,
+      queryParameters: {'bmi': bmi.toStringAsFixed(2)},
+    );
+
+    // context.goNamed(
+    //   AppRoute.result.name,
+    //   queryParameters: {'bmi : ${bmi.toStringAsFixed(2)}'},
+    // );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +93,31 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ],
               ),
-              HeightBox(),
-              WhiteBox(padding: EdgeInsets.all(25), child: SizedBox.shrink()),
+              //region 키
+              HeightBox(
+                onChanged: (height) {
+                  _height = height;
+                  debugPrint('키: $height');
+                },
+              ),
+              // WhiteBox(padding: EdgeInsets.all(25), child: SizedBox.shrink()),
+
+              //region 성별별
+              GenderBox(
+                onChanged: (gender) {
+                  _gender = gender;
+                  // debugPrint("성별: $gender");
+                },
+              ),
+
+              //region Calc button
               SizedBox(
                 width: double.infinity,
                 height: 75,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _onCalculatored();
+                  },
                   child: Text('Calculate BMI'),
                 ),
               ),

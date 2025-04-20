@@ -1,4 +1,4 @@
-enum AppRoute { start, main }
+enum AppRoute { start, main, result }
 
 //AppRoute의 ApprouteExtension 확장함수를 만든다
 extension AppRouteExtenstion on AppRoute {
